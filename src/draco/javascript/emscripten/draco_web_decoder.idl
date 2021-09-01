@@ -140,6 +140,12 @@ interface DracoFloat32Array {
   long size();
 };
 
+interface DracoDoubleArray {
+  void DracoDoubleArray();
+  double GetValue(long index);
+  long size();
+};
+
 interface DracoInt8Array {
   void DracoInt8Array();
   byte GetValue(long index);
@@ -188,6 +194,9 @@ interface MetadataQuerier {
                         DracoInt32Array out_values);
   double GetDoubleEntry([Ref, Const] Metadata metadata,
                         [Const] DOMString entry_name);
+  void GetEntryDoubleArray([Ref, Const] Metadata metadata,
+                           [Const] DOMString entry_name,
+                           DracoDoubleArray out_values);
   [Const] DOMString GetStringEntry([Ref, Const] Metadata metadata,
                                    [Const] DOMString entry_name);
 

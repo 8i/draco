@@ -52,6 +52,7 @@ class DracoArray {
   std::vector<T> values_;
 };
 
+using DracoDoubleArray = DracoArray<double>;
 using DracoFloat32Array = DracoArray<float>;
 using DracoInt8Array = DracoArray<int8_t>;
 using DracoUInt8Array = DracoArray<uint8_t>;
@@ -77,6 +78,9 @@ class MetadataQuerier {
   // This function does not guarantee that entry's type is double.
   double GetDoubleEntry(const draco::Metadata &metadata,
                         const char *entry_name) const;
+
+  void GetEntryDoubleArray(const draco::Metadata &metadata, const char *entry_name,
+                           DracoDoubleArray *out_values) const;
 
   // This function does not guarantee that entry's type is char*.
   const char *GetStringEntry(const draco::Metadata &metadata,
