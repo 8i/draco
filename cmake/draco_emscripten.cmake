@@ -83,6 +83,7 @@ macro(draco_get_required_emscripten_flags)
     # The WASM flag is reported as linker only.
     if(DRACO_WASM)
       list(APPEND ${em_FLAG_LIST_VAR_COMPILER} "-sWASM=1")
+      list(APPEND ${em_FLAG_LIST_VAR} "-sEXPORTED_FUNCTIONS=['_malloc', '_free']")
     else()
       list(APPEND ${em_FLAG_LIST_VAR_COMPILER} "-sWASM=0")
     endif()
