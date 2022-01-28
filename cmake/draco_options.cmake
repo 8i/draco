@@ -1,3 +1,17 @@
+# Copyright 2021 The Draco Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 if(DRACO_CMAKE_DRACO_OPTIONS_CMAKE_)
   return()
 endif() # DRACO_CMAKE_DRACO_OPTIONS_CMAKE_
@@ -68,9 +82,13 @@ macro(draco_set_default_options)
                "Build plugin library for Unity." VALUE OFF)
   draco_option(NAME DRACO_ANIMATION_ENCODING HELPSTRING "Enable animation."
                VALUE OFF)
-  draco_option(NAME DRACO_GLTF HELPSTRING "Support GLTF." VALUE OFF)
+  draco_option(NAME DRACO_GLTF_BITSTREAM HELPSTRING
+               "Draco GLTF extension bitstream specified features only."
+               VALUE OFF)
   draco_option(NAME DRACO_MAYA_PLUGIN HELPSTRING
                "Build plugin library for Maya." VALUE OFF)
+  draco_option(NAME DRACO_TRANSCODER_SUPPORTED HELPSTRING
+               "Enable the Draco transcoder." VALUE OFF)
   draco_check_deprecated_options()
 endmacro()
 
@@ -117,14 +135,16 @@ macro(draco_check_deprecated_options)
                                  DRACO_MAYA_PLUGIN)
   draco_handle_deprecated_option(OLDNAME BUILD_USD_PLUGIN NEWNAME
                                  BUILD_SHARED_LIBS)
+  draco_handle_deprecated_option(OLDNAME DRACO_GLTF NEWNAME
+                                 DRACO_GLTF_BITSTREAM)
 
 endmacro()
 
 # Macro for setting Draco features based on user configuration. Features enabled
 # by this macro are Draco global.
 macro(draco_set_optional_features)
-  if(DRACO_GLTF)
-    # Override settings when building for GLTF.
+  if(DRACO_GLTF_BITSTREAM)
+    # Enable only the features included in the Draco GLTF bitstream spec.
     draco_enable_feature(FEATURE "DRACO_MESH_COMPRESSION_SUPPORTED")
     draco_enable_feature(FEATURE "DRACO_NORMAL_ENCODING_SUPPORTED")
     draco_enable_feature(FEATURE "DRACO_STANDARD_EDGEBREAKER_SUPPORTED")
@@ -170,6 +190,9 @@ macro(draco_set_optional_features)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
   endif()
 
+  if(DRACO_TRANSCODER_SUPPORTED)
+    draco_enable_feature(FEATURE "DRACO_TRANSCODER_SUPPORTED")
+  endif()
 endmacro()
 
 # Macro that handles tracking of Draco preprocessor symbols for the purpose of
