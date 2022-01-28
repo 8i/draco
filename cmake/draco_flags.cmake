@@ -1,3 +1,17 @@
+# Copyright 2021 The Draco Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 if(DRACO_CMAKE_DRACO_FLAGS_CMAKE_)
   return()
 endif() # DRACO_CMAKE_DRACO_FLAGS_CMAKE_
@@ -243,5 +257,36 @@ macro(draco_set_cxx_flags)
 
   if(cxx_flags)
     draco_test_cxx_flag(FLAG_LIST_VAR_NAMES ${cxx_flag_lists})
+  endif()
+endmacro()
+
+# Collects Draco built-in and user-specified linker flags and tests them. Halts
+# configuration and reports the error when any flags cause the build to fail.
+#
+# Note: draco_test_exe_linker_flag() does the real work of setting the flags and
+# running the test compile commands.
+macro(draco_set_exe_linker_flags)
+  unset(linker_flag_lists)
+
+  if(DRACO_VERBOSE)
+    message("draco_set_exe_linker_flags: "
+            "draco_base_exe_linker_flags=${draco_base_exe_linker_flags}")
+  endif()
+
+  if(draco_base_exe_linker_flags)
+    list(APPEND linker_flag_lists draco_base_exe_linker_flags)
+  endif()
+
+  if(linker_flag_lists)
+    unset(test_linker_flags)
+
+    if(DRACO_VERBOSE)
+      message("draco_set_exe_linker_flags: "
+              "linker_flag_lists=${linker_flag_lists}")
+    endif()
+
+    draco_set_and_stringify(DEST test_linker_flags SOURCE_VARS
+                            ${linker_flag_lists})
+    draco_test_exe_linker_flag(FLAG_LIST_VAR_NAME test_linker_flags)
   endif()
 endmacro()
